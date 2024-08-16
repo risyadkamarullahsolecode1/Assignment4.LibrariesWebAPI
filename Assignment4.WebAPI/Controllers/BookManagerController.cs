@@ -2,10 +2,13 @@
 using Assignment4.Application;
 using Microsoft.AspNetCore.Mvc;
 using Assignment4.Application.Interfaces;
+using Asp.Versioning;
 
 namespace Assignment4.WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[Controller]")]
     [ApiController]
     public class BookManagerController : ControllerBase
     {
@@ -17,6 +20,7 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpPost("borrow")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> BorrowBook([FromQuery] int userId, [FromQuery] int bookId)
         {
             try
@@ -37,6 +41,7 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpPost("return")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> ReturnBook([FromQuery] int userId, [FromQuery]  int bookId)
         {
             try
