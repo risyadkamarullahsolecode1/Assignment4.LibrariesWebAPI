@@ -16,14 +16,13 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            var books = _bookRepository.GetAllBooks();
-            return Ok(books);
+            return Ok(await _bookRepository.GetAllBooks());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetBook(int id)
+        public async Task<ActionResult<Book>> GetBook(int id)
         {
             var book = _bookRepository.GetBookById(id);
             if (book == null) return NotFound();
@@ -31,26 +30,30 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBook(Book book)
+        public async Task<ActionResult<Book>> AddBook(Book book)
         {
-            _bookRepository.AddBook(book);
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+            var createdBook = await _bookRepository.AddBook(book);
+            return Ok(createdBook);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id, Book book)
+        public async Task<IActionResult> UpdateBook(int id, Book book)
         {
             if (id != book.Id) return BadRequest();
 
-            _bookRepository.UpdateBook(book);
-            return NoContent();
+            var createdBook = await _bookRepository.UpdateBook(book);
+            return Ok(createdBook);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(int id)
         {
-            _bookRepository.DeleteBook(id);
-            return NoContent();
+            var deleted = await _bookRepository.DeleteBook(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+            return Ok("Buku telah dihapus");
         }
     }
 }
