@@ -15,11 +15,9 @@ namespace Assignment4.Domain.Entities
         [Required]
         public int Id { get; set; }
         [Required]
-        [MinLength(1)]
         public string Name { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        [MinLength(1), MaxLength(20)]
         public int NoHp { get; set; }
     }
 }

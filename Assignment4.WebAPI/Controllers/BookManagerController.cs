@@ -6,9 +6,7 @@ using Asp.Versioning;
 
 namespace Assignment4.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/[Controller]")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class BookManagerController : ControllerBase
     {
@@ -20,7 +18,6 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpPost("borrow")]
-        [MapToApiVersion("1.0")]
         public async Task<IActionResult> BorrowBook([FromQuery] int userId, [FromQuery] int bookId)
         {
             try
@@ -41,12 +38,11 @@ namespace Assignment4.WebAPI.Controllers
         }
 
         [HttpPost("return")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> ReturnBook([FromQuery] int userId, [FromQuery]  int bookId)
+        public async Task<IActionResult> ReturnBook([FromQuery] int userId, [FromQuery]  int bookId, [FromBody]DateOnly tanggalKembali)
         {
             try
             {
-                await _bookManagerService.ReturnBook(userId, bookId);
+                await _bookManagerService.ReturnBook(userId, bookId, tanggalKembali);
                 return Ok("Book returned successfully.");
             }
             catch (InvalidOperationException ex)
@@ -59,6 +55,12 @@ namespace Assignment4.WebAPI.Controllers
                 // Handle other potential exceptions
                 return StatusCode(500, "An error occurred while borrowing the book.");
             }
+        }
+        [HttpGet("BorrowBook")]
+        public async Task<IActionResult> GetAllRecord()
+        {
+            var a = await _bookManagerService.GetAllBorrow();
+            return Ok(a);
         }
     }
 }

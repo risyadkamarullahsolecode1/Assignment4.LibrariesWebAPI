@@ -52,20 +52,41 @@ namespace Assignment4.Application.Services
                 UserId = userId,
                 BookId = bookId,
                 TanggalPinjam = tanggalPinjam,
-                TanggalKembali = tanggalKembali
+                DueDate = tanggalKembali
             };
             await _bookManagerRepository.AddBorrowRecord(borrowBook);   
         }
 
-        public async Task ReturnBook(int userId, int bookId)
+        public async Task ReturnBook(int userId, int bookId, DateOnly tanggalKembali)
         {
+            var PinjamDuration = _configuration.GetValue<int>("LibrarySettings:PinjamDuration");
+            var Penalty = _configuration.GetValue<int>("LibrarySettings:PenaltyPerHari");
+
             // Fetch the borrow record for the given user and book
             var borrowRecord = _bookManagerRepository.GetBorrowRecord(userId, bookId);
             if (borrowRecord == null) throw new Exception("Borrow record not found");
 
-            var book = _bookRepository.GetBookById(bookId);
+            //Configure Tanggal Pinjam dan kembali
+            DateOnly tanggalPinjam = DateOnly.FromDateTime(DateTime.Now);
+            DateOnly DueDate = tanggalPinjam.AddDays(PinjamDuration);
 
-            _bookManagerRepository.DeleteBorrowRecord(borrowRecord);
+            int penalty = 0;
+
+            if (tanggalKembali > DueDate)
+            {
+                int overdueDays = (tanggalKembali.ToDateTime(TimeOnly.MinValue) - DueDate.ToDateTime(TimeOnly.MinValue)).Days;
+                //calculate penalty
+                penalty = overdueDays * Penalty;
+            }
+            borrowRecord.TanggalKembali = tanggalKembali;
+            borrowRecord.Penalty = penalty;
+            await _bookManagerRepository.UpdateBorrowRecord(borrowRecord);
+        }
+
+        public async Task<IEnumerable<BookManager>> GetAllBorrow()
+        {
+            var a = await _bookManagerRepository.GetAllBookRecord();
+            return a;
         }
     }
 }

@@ -28,8 +28,8 @@ namespace Assignment4.Infrastructure.Data.Repositories
         }
         public async Task<User> AddUser(User user)
         {
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return user;
         }
         public async Task<User> UpdateUser(User user)

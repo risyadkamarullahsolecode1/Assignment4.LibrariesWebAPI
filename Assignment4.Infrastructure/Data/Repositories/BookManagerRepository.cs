@@ -1,4 +1,5 @@
-﻿using Assignment4.Domain.Entities;
+﻿using Assignment4.Application.Services;
+using Assignment4.Domain.Entities;
 using Assignment4.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,12 @@ namespace Assignment4.Infrastructure.Data.Repositories
         public BookManagerRepository(LibraryContext context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<BookManager>> GetAllBookRecord()
+        {
+            var book = await _context.BookManagers.ToListAsync();
+            return book;
         }
 
         public async Task<int> GetBorrowedBooksCountByUser(int userId)
@@ -41,6 +48,11 @@ namespace Assignment4.Infrastructure.Data.Repositories
         {
             _context.BookManagers.Remove(borrowRecord);
             _context.SaveChanges();
+        }
+        public async Task UpdateBorrowRecord(BookManager borrow)
+        {
+            _context.BookManagers.Update(borrow);
+            await _context.SaveChangesAsync();
         }
     }
 }

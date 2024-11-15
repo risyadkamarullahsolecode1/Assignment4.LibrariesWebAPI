@@ -19,5 +19,7 @@ namespace Assignment4.Domain.Entities
         public User User { get; set; }
         public DateOnly TanggalPinjam { get; set; }
         public DateOnly TanggalKembali { get; set; }
+        public DateOnly? DueDate { get; set; }
+        public int? Penalty { get; set; }
     }
 }

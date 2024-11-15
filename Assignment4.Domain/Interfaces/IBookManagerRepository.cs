@@ -13,5 +13,7 @@ namespace Assignment4.Domain.Interfaces
         BookManager GetBorrowRecord(int userId, int bookId);
         Task AddBorrowRecord(BookManager borrowRecord);
         Task DeleteBorrowRecord(BookManager borrowRecord);
+        Task UpdateBorrowRecord(BookManager borrow);
+        Task<IEnumerable<BookManager>> GetAllBookRecord();
     }
 }

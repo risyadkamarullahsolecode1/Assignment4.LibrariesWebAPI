@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment4.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/[Controller]")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -44,7 +42,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpGet]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<Book>>> GetAllUser()
         {
             return Ok(await _userRepository.GetAllUser());
@@ -77,7 +74,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpGet("{id}")]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
             var user = await _userRepository.GetUserById(id);
@@ -120,11 +116,10 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpPost]
-        [MapToApiVersion("1.0")]
-        public async Task<ActionResult<User>> AddUser(User user)
+        public async Task<IActionResult> AddUser(User user)
         {
             var createdUser = await _userRepository.AddUser(user);
-            return CreatedAtAction(nameof(AddUser), createdUser);
+            return Ok(createdUser);
         }
         /// <summary>
         /// You can add or update user here
@@ -159,7 +154,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpPut("{id}")]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<User>> UpdateUser(int id, User user)
         {
             if (id == 0)

@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment4.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/[Controller]")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class BookController : ControllerBase
     {
@@ -44,7 +42,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpGet]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
             return Ok(await _bookRepository.GetAllBooks());
@@ -76,10 +73,9 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpGet("{id}")]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = _bookRepository.GetBookById(id);
+            var book = await _bookRepository.GetBookById(id);
             if (book == null) return NotFound();
             return Ok(book);
         }
@@ -118,7 +114,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpPost]
-        [MapToApiVersion("1.0")]
         public async Task<ActionResult<Book>> AddBook(Book book)
         {
             var createdBook = await _bookRepository.AddBook(book);
@@ -159,7 +154,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpPut("{id}")]
-        [MapToApiVersion("1.0")]
         public async Task<IActionResult> UpdateBook(int id, Book book)
         {
             if (id != book.Id) return BadRequest();
@@ -194,7 +188,6 @@ namespace Assignment4.WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns> This endpoint returns a list of Accounts.</returns>
         [HttpDelete("{id}")]
-        [MapToApiVersion("1.0")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var deleted = await _bookRepository.DeleteBook(id);
